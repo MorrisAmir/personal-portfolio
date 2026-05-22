@@ -344,12 +344,98 @@
       color: var(--accent);
     }
 
+    /* Small button modifier */
+    .btn-small {
+      padding: 0.25rem 0.6rem !important;
+      font-size: 0.65rem !important;
+      letter-spacing: 0.06em !important;
+      border-radius: 4px !important;
+      text-transform: none !important;
+    }
+
+    /* Inline project gallery link (professional, non-button) */
+    .project-link {
+      color: var(--accent);
+      text-decoration: underline;
+      font-weight: 600;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.95rem;
+      margin-left: 0.5rem;
+    }
+    .project-link:hover { color: var(--accent2); }
+
     /* Mobile nav menu */
     #mobile-menu {
       display: none;
     }
     #mobile-menu.open {
       display: flex;
+    }
+
+    /* Profile thumbnail in nav */
+    .profile-thumb {
+      width: 40px;
+      height: 40px;
+      border-radius: 9999px;
+      object-fit: cover;
+      display: block;
+      border: 2px solid #1f1f1f;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .profile-thumb:hover { transform: scale(1.05); box-shadow: 0 6px 18px rgba(0,0,0,0.6); }
+
+    /* Profile modal */
+    #profileModal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.7);
+      z-index: 9999;
+      padding: 2rem;
+    }
+    #profileModal.open { display: flex; }
+    #profileModal .modal-inner {
+      max-width: 92vw;
+      max-height: 92vh;
+      border-radius: 8px;
+      overflow: hidden;
+      background: linear-gradient(180deg,#111,#0a0a0a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem;
+    }
+    #profileModal img {
+      max-width: 86vw;
+      max-height: 86vh;
+      border-radius: 6px;
+      object-fit: contain;
+      display: block;
+    }
+    #profileModal .close-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,255,255,0.06);
+      color: var(--text);
+      padding: 0.45rem 0.6rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    /* Stars canvas (background) */
+    .stars-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+      z-index: 0;
     }
 
     @media (max-width: 768px) {
@@ -369,9 +455,15 @@
   <!-- Main navigation bar containing all likns onn both mobile and desktop -->
   <nav>
     <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-      <a href="#hero" class="font-bold text-white" style="font-family:'Syne',sans-serif; font-size:1rem; letter-spacing:-0.02em;">
-        Amir<span class="accent">.</span>
-      </a>
+      <div class="flex items-center gap-3">
+        <button id="profileBtn" aria-label="View profile photo" title="View profile photo" style="background:transparent;border:0;padding:0;">
+          <img src="assets/images/prof.png" alt="Morris Amir" class="profile-thumb" />
+        </button>
+
+        <a href="#hero" class="font-bold text-white" style="font-family:'Syne',sans-serif; font-size:1rem; letter-spacing:-0.02em;">
+          Amir<span class="accent">.</span>
+        </a>
+      </div>
 
       <!-- Desktop links to redirect to expounded views -->
       <div class="hidden md:flex items-center gap-8">
@@ -403,7 +495,8 @@
 
   <!-- Hero section: primary introduction, tagline, and call-to-action links that orient visitors -->
 <section id="hero">
-  <div class="max-w-6xl mx-auto w-full flex items-center gap-12 px-6">
+  <canvas id="starsCanvas" class="stars-canvas" aria-hidden="true"></canvas>
+  <div class="max-w-6xl mx-auto w-full flex items-center gap-12 px-6 relative z-10">
     <!-- Left: hero text -->
     <div class="w-full lg:w-1/2">
       <p class="section-label mb-4">
@@ -427,6 +520,11 @@
       <div class="flex flex-wrap gap-4">
         <a href="#projects" class="btn-primary">View My Work →</a>
         <a href="#contact" class="btn-outline">Get in Touch</a>
+        </div>
+
+      <!-- Stars toggle -->
+      <div class="mt-6">
+        <button id="toggleStarsBtn" class="btn-outline btn-small" aria-pressed="true" aria-label="Toggle background stars">Disable background stars</button>
       </div>
     </div>
 
@@ -538,8 +636,9 @@
             Cross-platform agricultural mobile app built for Skyfield Technologies. Led front-end development including UI/UX design and REST API integration.
           </p>
           <p class="project-tech">Flutter · Dart · Firebase · REST APIs</p>
-          <div class="mt-4 pt-4 border-t border-gray-800">
+          <div class="mt-4 pt-4 border-t border-gray-800 flex items-center gap-4">
             <span class="text-xs text-gray-600" style="font-family:'Syne',sans-serif;">Lead Front-End Developer</span>
+            <a href="/skyfield-images.html" target="_blank" rel="noopener" class="project-link">View project gallery</a>
           </div>
         </div>
 
@@ -551,8 +650,9 @@
             Digital based system to automate day to day activities of the Egerton Muslim Students Association during the month of Ramadhan.
           </p>
           <p class="project-tech">React-JS · Firebase · Auth</p>
-          <div class="mt-4 pt-4 border-t border-gray-800">
+          <div class="mt-4 pt-4 border-t border-gray-800 flex items-center gap-4">
             <span class="text-xs text-gray-600" style="font-family:'Syne',sans-serif;">Self initiated</span>
+            <a href="/emsa-images.html" target="_blank" rel="noopener" class="project-link">View project gallery</a>
           </div>
         </div>
 
@@ -580,6 +680,22 @@
           <p class="project-tech">HTML5 · Tailwind CSS · JavaScript</p>
           <div class="mt-4 pt-4 border-t border-gray-800">
             <span class="text-xs" style="color:var(--accent); font-family:'Syne',sans-serif;">You're looking at it.</span>
+          </div>
+        </div>
+
+        <!-- Project card: Tukistudy -->
+        <div class="project-card fade-in" style="transition-delay:0.45s">
+          <p class="project-year">2026</p>
+          <h3 class="project-title">Tukistudy</h3>
+          <p class="text-gray-500 text-sm leading-relaxed mb-4">
+            Country-wide educational platform to connect learners of all levels, provide large content
+            resources, and replace youth scrolling addiction with educational content. Lead front-end
+            and API integration; built using Flutter.
+          </p>
+          <p class="project-tech">Flutter · Firebase · REST APIs</p>
+          <div class="mt-4 pt-4 border-t border-gray-800 flex items-center gap-4">
+            <span class="text-xs text-gray-600" style="font-family:'Syne',sans-serif;">Lead Frontend & API Integration</span>
+            <a href="https://play.google.com/store/apps/details?id=com.tuki.tukistudy&hl=en" target="_blank" rel="noopener" class="btn-outline">Download on Play Store</a>
           </div>
         </div>
 
@@ -636,6 +752,7 @@
           <div class="cert-card">
             <p class="text-xs text-gray-600 mb-1" style="font-family:'Syne',sans-serif;">Jan 2024 · Cursa Online</p>
             <h4 class="font-bold text-sm text-white" style="font-family:'Syne',sans-serif;">Artificial Intelligence with Python</h4>
+            <p class="mt-2"><a href="https://cursacertificates.s3.amazonaws.com/cert_6a163b91eb048a7ce5db9c5e68dfc503.png?time=1749966931" target="_blank" rel="noopener" class="project-link">View credentials</a></p>
           </div>
 
           <div class="cert-card">
@@ -676,6 +793,12 @@
           GitHub
           <span class="arrow">↗</span>
         </a>
+
+        <!-- LinkedIn -->
+        <a href="https://www.linkedin.com/in/morris-amir-4587b7365/" target="_blank" rel="noopener" class="contact-link">
+          LinkedIn
+          <span class="arrow">↗</span>
+        </a>
       </div>
 
     </div>
@@ -692,6 +815,14 @@
       </p>
     </div>
   </footer>
+
+  <!-- Profile modal for expanded photo view -->
+  <div id="profileModal" aria-hidden="true">
+    <div class="modal-inner" role="dialog" aria-modal="true" aria-label="Profile photo">
+      <button class="close-btn" id="profileClose" aria-label="Close">✕</button>
+      <img src="assets/images/prof.png" alt="Morris Amir — profile" />
+    </div>
+  </div>
 
   <!--JAVASCRIPT : cursor interactions, mobile menu behavior, scroll reveals, and nav highlighting- had some Ai help -->
 
@@ -784,7 +915,47 @@
     }, { threshold: 0.4 });
 
     sections.forEach(s => navObserver.observe(s));
+
+    // Profile modal open/close behavior
+    const profileBtn = document.getElementById('profileBtn');
+    const profileModal = document.getElementById('profileModal');
+    const profileClose = document.getElementById('profileClose');
+
+    function openProfile() {
+      profileModal.classList.add('open');
+      profileModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeProfile() {
+      profileModal.classList.remove('open');
+      profileModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    profileBtn && profileBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openProfile();
+    });
+
+    profileClose && profileClose.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeProfile();
+    });
+
+    // Close when clicking outside the inner modal
+    profileModal && profileModal.addEventListener('click', (e) => {
+      if (e.target === profileModal) closeProfile();
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && profileModal.classList.contains('open')) closeProfile();
+    });
+    
   </script>
+
+  <!-- Stars script (external) -->
+  <script src="assets/js/stars.js"></script>
 
 </body>
 </html>
