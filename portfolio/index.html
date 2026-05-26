@@ -544,18 +544,20 @@
       </div>
 
       <div class="fade-in" style="transition-delay:0.15s">
-        <p class="text-gray-400 leading-relaxed mb-5">
+        <!-- FALLBACK CONTENT: About section will be populated from Firestore on load -->
+        <p class="text-gray-400 leading-relaxed mb-5" id="about-bio">
           I'm Morris — a Computer Science student and self-driven developer with a strong
           foundation in front-end web development and cross-platform mobile apps using Flutter.
         </p>
-        <p class="text-gray-400 leading-relaxed mb-5">
+        <p class="text-gray-400 leading-relaxed mb-5" id="about-tagline">
          Through consistent consultations, positively inspiring influences from collegues, frequent undos and redos and of course ,Ai,
          I have established a "can be better" knowledge base, enabling me to venture into inituitive problem-solving.
         </p>
-        <p class="text-gray-400 leading-relaxed">
+        <p class="text-gray-400 leading-relaxed" id="about-status">
           Beyond the screen, I'm proactive, collaborative, and a good team player ,
           always eager to learn, share, and contribute to projects that make a difference.
         </p>
+        <!-- END FALLBACK CONTENT -->
       </div>
 
     </div>
@@ -572,7 +574,9 @@
         <h2 class="section-title">What I work<br /><span class="accent">with.</span></h2>
       </div>
 
-      <div class="grid md:grid-cols-3 gap-10">
+      <div class=\"grid md:grid-cols-3 gap-10\" id=\"skills-grid\">
+
+        <!-- FALLBACK CONTENT: Skills will be populated from Firestore on load -->
 
         <div class="fade-in" style="transition-delay:0.1s">
           <!-- frontend fair competence -->
@@ -609,6 +613,8 @@
           </div>
         </div>
 
+        <!-- END FALLBACK CONTENT -->
+
       </div>
     </div>
   </section>
@@ -624,7 +630,9 @@
         <h2 class="section-title">Selected<br /><span class="accent">work.</span></h2>
       </div>
 
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div class=\"grid md:grid-cols-2 lg:grid-cols-3 gap-5\" id=\"projects-grid\">
+
+        <!-- FALLBACK CONTENT: Projects will be populated from Firestore on load -->
 
         <!-- Project card - skyfield aerotech -->
         <div class="project-card fade-in" style="transition-delay:0.1s">
@@ -696,6 +704,8 @@
             <a href="https://play.google.com/store/apps/details?id=com.tuki.tukistudy&hl=en" target="_blank" rel="noopener" class="btn-outline">Download on Play Store</a>
           </div>
         </div>
+
+        <!-- END FALLBACK CONTENT -->
 
       </div>
     </div>
@@ -954,6 +964,155 @@
 
   <!-- Stars script (external) -->
   <script src="assets/js/stars.js"></script>
+
+  <!-- Firebase + Firestore Integration -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBJ76owS-vxJLW_rAZd4YU2wNIlFXAhznQ",
+      authDomain: "portfolio-dashboard-a9123.firebaseapp.com",
+      projectId: "portfolio-dashboard-a9123",
+      storageBucket: "portfolio-dashboard-a9123.firebasestorage.app",
+      messagingSenderId: "992712185887",
+      appId: "1:992712185887:web:2a488fea05b8f3aeb55d2a"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    console.log('Firebase initialized for portfolio');
+
+    // Load projects from Firestore
+    async function loadProjects() {
+      try {
+        const projectsGrid = document.getElementById('projects-grid');
+        if (!projectsGrid) return;
+
+        const querySnapshot = await getDocs(collection(db, 'projects'));
+        const projects = [];
+        querySnapshot.forEach(doc => {
+          projects.push({ id: doc.id, ...doc.data() });
+        });
+
+        if (projects.length > 0) {
+          // Clear existing hardcoded cards
+          projectsGrid.innerHTML = '';
+
+          // Render fetched projects
+          projects.forEach((p, idx) => {
+            const card = document.createElement('div');
+            card.className = 'project-card fade-in';
+            card.style.transitionDelay = `${(idx * 0.1)}s`;
+            
+            const techStr = Array.isArray(p.tech) ? p.tech.join(' · ') : p.tech || '';
+            const year = p.year || 'TBD';
+            const role = p.role || '';
+            
+            card.innerHTML = `
+              <p class="project-year">${year}${role ? ' — ' + role : ''}</p>
+              <h3 class="project-title">${p.title}</h3>
+              <p class="text-gray-500 text-sm leading-relaxed mb-4">${p.description}</p>
+              <p class="project-tech">${techStr}</p>
+            `;
+            projectsGrid.appendChild(card);
+          });
+          console.log(`Loaded ${projects.length} projects from Firestore`);
+        }
+      } catch (err) {
+        console.error('Error loading projects:', err);
+      }
+    }
+
+    // Load skills from Firestore
+    async function loadSkills() {
+      try {
+        const skillsGrid = document.getElementById('skills-grid');
+        if (!skillsGrid) return;
+
+        const querySnapshot = await getDocs(collection(db, 'skills'));
+        const skills = [];
+        querySnapshot.forEach(doc => {
+          skills.push({ id: doc.id, ...doc.data() });
+        });
+
+        if (skills.length > 0) {
+          // Append skills to the grid 
+          const container = document.createElement('div');
+          container.className = 'fade-in';
+          container.style.transitionDelay = '0.4s';
+          
+          container.innerHTML = `
+            <p class="text-xs tracking-widest text-gray-600 uppercase font-semibold mb-4" style="font-family:'Syne',sans-serif;">From Firestore</p>
+            <div class="flex flex-wrap gap-2" id="firestore-skills-container"></div>
+          `;
+          skillsGrid.appendChild(container);
+          
+          const skillsContainer = container.querySelector('#firestore-skills-container');
+          skills.forEach(s => {
+            const tag = document.createElement('span');
+            tag.className = 'skill-tag';
+            tag.textContent = s.name;
+            skillsContainer.appendChild(tag);
+          });
+          console.log(`Loaded ${skills.length} skills from Firestore`);
+        }
+      } catch (err) {
+        console.error('Error loading skills:', err);
+      }
+    }
+
+    // Load about section from Firestore
+    async function loadAbout() {
+      try {
+        const aboutBio = document.getElementById('about-bio');
+        const aboutTagline = document.getElementById('about-tagline');
+        const aboutStatus = document.getElementById('about-status');
+        
+        if (!aboutBio) return;
+
+        const docRef = doc(db, 'about', 'main');
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          
+          if (data.bio && aboutBio) {
+            aboutBio.textContent = data.bio;
+          }
+          if (data.tagline && aboutTagline) {
+            aboutTagline.textContent = data.tagline;
+          }
+          if (aboutStatus && data.available) {
+            aboutStatus.innerHTML = `
+              <span class="status-dot" style="display:inline-block;"></span>
+              Available for opportunities
+            `;
+          }
+          console.log('About section loaded from Firestore');
+        }
+      } catch (err) {
+        console.error('Error loading about section:', err);
+      }
+    }
+
+    // Load all content when DOM is ready
+    async function initializePortfolio() {
+      await loadProjects();
+      await loadSkills();
+      await loadAbout();
+    }
+
+    // Wait for DOM to be fully loaded
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializePortfolio);
+    } else {
+      initializePortfolio();
+    }
+  </script>
 
 </body>
 </html>
