@@ -1,5 +1,58 @@
+# OS Files
 .DS_Store
 Thumbs.db
-*.log
+desktop.ini
 
+# Logs
+*.log
+logs/
+*.log.*
+
+# Environment Variables (DO NOT COMMIT THESE)
+.env
+.env.local
+.env.*.local
+.env.production.local
+
+# Node/npm
+node_modules/
+npm-debug.log
+yarn-error.log
+dist/
+build/
+
+# IDE
+.vscode/settings.json
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# API Keys & Secrets (never commit these)
+*.key
+*.pem
+*.pfx
+secrets.json
+config.local.js
+config.local.json
+
+# Database files with sensitive data
+*.db
+*.sqlite
+*.sqlite3
+
+# Sensitive files
 AI.txt
+passwords.txt
+*.password
+credentials.*
+oauth-token*
+auth-token*
+api-key*
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# OS-specific
+$RECYCLE.BIN/
