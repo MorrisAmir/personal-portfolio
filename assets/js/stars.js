@@ -7,20 +7,19 @@
 
   function resizeCanvas(){
     canvas.width = window.innerWidth;
-    canvas.height = document.getElementById('hero').clientHeight || window.innerHeight;
+    canvas.height = document.body.scrollHeight;
   }
 
   function createStars(){
     stars = [];
     const area = canvas.width * canvas.height;
-    // Increased density: more stars per area
-    const count = Math.max(120, Math.floor(area / 20000));
+    const count = Math.max(200, Math.floor(area / 15000));
     for(let i=0;i<count;i++){
       stars.push({
         x: Math.random()*canvas.width,
         y: Math.random()*canvas.height,
         r: Math.random()*1.4+0.2,
-        v: Math.random()*0.9+0.2,
+        v: Math.random()*3+2,
         a: Math.random()*0.9+0.1
       });
     }
@@ -58,6 +57,14 @@
     if(localStorage.getItem('starsEnabled') === 'false') return;
     resizeCanvas();
     createStars();
+  });
+
+  // Re-measure page height after content loads
+  window.addEventListener('load', ()=>{
+    if(localStorage.getItem('starsEnabled') !== 'false'){
+      resizeCanvas();
+      createStars();
+    }
   });
 
   const toggleBtn = document.getElementById('toggleStarsBtn');
